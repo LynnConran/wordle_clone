@@ -15,8 +15,10 @@ button_width = 6
 button_height = 30
 
 label_list = []
+button_list = []
 current_letter = 0
 current_row = 0
+# bottom_label = None
 
 word = 'temp'
 
@@ -55,6 +57,7 @@ def prompt_guess(length):
 def change_label_color(color, position):
     label_list[position]['background'] = color
 
+
 def provide_feedback():
     with open(five_file_path) as file:
         words = file.readlines()
@@ -66,15 +69,22 @@ def provide_feedback():
         guess += label_list[position + i]['text']
     guess = guess.lower()
     if guess not in words:
-        print("Not a valid word")
+        bottom_label['text'] = 'Not a valid word'
         return False
+    else:
+        bottom_label['text'] = ''
     for i in range(len(guess)):
         if guess[i] == word[i]:
             change_label_color('green', position + i)
+            change_button_color('green', guess[i].upper())
         elif guess[i] in word:
             change_label_color('yellow', position + i)
+            change_button_color('yellow', guess[i].upper())
         else:
             change_label_color('grey', position + i)
+            change_button_color('grey', guess[i].upper())
+    if guess == word:
+        game_over()
     return True
 
 
@@ -118,13 +128,22 @@ def return_pressed():
 
 def game_over():
     global current_letter, current_row
-    print("Game over, word was : " + word)
+    bottom_label['text'] = 'Game over, word was : ' + str(word)
     read_words()
     for i in label_list:
         i['text'] = ''
         i['background'] = 'white'
+    for i in button_list:
+        i['bg'] = 'SystemButtonFace'
     current_letter = 0
     current_row = 0
+
+
+def change_button_color(color, letter):
+    for i in button_list:
+        if i['text'] == letter:
+            i['bg'] = color
+            return
 
 
 # Press the green button in the gutter to run the script.
@@ -149,66 +168,92 @@ if __name__ == '__main__':
     root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
     root.resizable(False, False)
 
-    q = ttk.Button(root, text='Q', command=lambda: letter_pressed('Q'), width=button_width)
+    q = tk.Button(root, text='Q', command=lambda: letter_pressed('Q'), width=button_width)
+    button_list.append(q)
     q.place(x=button_width*0 + x_offset, y=y_offset)
-    w = ttk.Button(root, text='W', command=lambda: letter_pressed('W'), width=button_width)
+    w = tk.Button(root, text='W', command=lambda: letter_pressed('W'), width=button_width)
+    button_list.append(w)
     w.place(x=button_width*10 + x_offset, y=y_offset)
-    e = ttk.Button(root, text='E', command=lambda: letter_pressed('E'), width=button_width)
+    e = tk.Button(root, text='E', command=lambda: letter_pressed('E'), width=button_width)
+    button_list.append(e)
     e.place(x=button_width*20 + x_offset, y=y_offset)
-    r = ttk.Button(root, text='R', command=lambda: letter_pressed('R'), width=button_width)
+    r = tk.Button(root, text='R', command=lambda: letter_pressed('R'), width=button_width)
+    button_list.append(r)
     r.place(x=button_width*30 + x_offset, y=y_offset)
-    t = ttk.Button(root, text='T', command=lambda: letter_pressed('T'), width=button_width)
+    t = tk.Button(root, text='T', command=lambda: letter_pressed('T'), width=button_width)
+    button_list.append(t)
     t.place(x=button_width*40 + x_offset, y=y_offset)
-    y = ttk.Button(root, text='Y', command=lambda: letter_pressed('Y'), width=button_width)
+    y = tk.Button(root, text='Y', command=lambda: letter_pressed('Y'), width=button_width)
+    button_list.append(y)
     y.place(x=button_width*50 + x_offset, y=y_offset)
-    u = ttk.Button(root, text='U', command=lambda: letter_pressed('U'), width=button_width)
+    u = tk.Button(root, text='U', command=lambda: letter_pressed('U'), width=button_width)
+    button_list.append(u)
     u.place(x=button_width*60 + x_offset, y=y_offset)
-    i = ttk.Button(root, text='I', command=lambda: letter_pressed('I'), width=button_width)
+    i = tk.Button(root, text='I', command=lambda: letter_pressed('I'), width=button_width)
+    button_list.append(i)
     i.place(x=button_width*70 + x_offset, y=y_offset)
-    o = ttk.Button(root, text='O', command=lambda: letter_pressed('O'), width=button_width)
+    o = tk.Button(root, text='O', command=lambda: letter_pressed('O'), width=button_width)
+    button_list.append(o)
     o.place(x=button_width*80 + x_offset, y=y_offset)
-    p = ttk.Button(root, text='P', command=lambda: letter_pressed('P'), width=button_width)
+    p = tk.Button(root, text='P', command=lambda: letter_pressed('P'), width=button_width)
+    button_list.append(p)
     p.place(x=button_width*90 + x_offset, y=y_offset)
 
-    a = ttk.Button(root, text='A', command=lambda: letter_pressed('A'), width=button_width)
+    a = tk.Button(root, text='A', command=lambda: letter_pressed('A'), width=button_width)
+    button_list.append(a)
     a.place(x=button_width * 00 + x_offset*2, y=y_offset + button_height)
-    s = ttk.Button(root, text='S', command=lambda: letter_pressed('S'), width=button_width)
+    s = tk.Button(root, text='S', command=lambda: letter_pressed('S'), width=button_width)
+    button_list.append(s)
     s.place(x=button_width * 10 + x_offset*2, y=y_offset + button_height)
-    d = ttk.Button(root, text='D', command=lambda: letter_pressed('D'), width=button_width)
+    d = tk.Button(root, text='D', command=lambda: letter_pressed('D'), width=button_width)
+    button_list.append(d)
     d.place(x=button_width * 20 + x_offset*2, y=y_offset + button_height)
-    f = ttk.Button(root, text='F', command=lambda: letter_pressed('F'), width=button_width)
+    f = tk.Button(root, text='F', command=lambda: letter_pressed('F'), width=button_width)
+    button_list.append(f)
     f.place(x=button_width * 30 + x_offset*2, y=y_offset + button_height)
-    g = ttk.Button(root, text='G', command=lambda: letter_pressed('G'), width=button_width)
+    g = tk.Button(root, text='G', command=lambda: letter_pressed('G'), width=button_width)
+    button_list.append(g)
     g.place(x=button_width * 40 + x_offset*2, y=y_offset + button_height)
-    h = ttk.Button(root, text='H', command=lambda: letter_pressed('H'), width=button_width)
+    h = tk.Button(root, text='H', command=lambda: letter_pressed('H'), width=button_width)
+    button_list.append(h)
     h.place(x=button_width * 50 + x_offset*2, y=y_offset + button_height)
-    j = ttk.Button(root, text='J', command=lambda: letter_pressed('J'), width=button_width)
+    j = tk.Button(root, text='J', command=lambda: letter_pressed('J'), width=button_width)
+    button_list.append(j)
     j.place(x=button_width * 60 + x_offset*2, y=y_offset + button_height)
-    k = ttk.Button(root, text='K', command=lambda: letter_pressed('K'), width=button_width)
+    k = tk.Button(root, text='K', command=lambda: letter_pressed('K'), width=button_width)
+    button_list.append(k)
     k.place(x=button_width * 70 + x_offset*2, y=y_offset + button_height)
-    l = ttk.Button(root, text='L', command=lambda: letter_pressed('L'), width=button_width)
+    l = tk.Button(root, text='L', command=lambda: letter_pressed('L'), width=button_width)
+    button_list.append(l)
     l.place(x=button_width * 80 + x_offset*2, y=y_offset + button_height)
 
-    z = ttk.Button(root, text='Z', command=lambda: letter_pressed('Z'), width=button_width)
+    z = tk.Button(root, text='Z', command=lambda: letter_pressed('Z'), width=button_width)
+    button_list.append(z)
     z.place(x=button_width * 0 + x_offset*3, y=y_offset + button_height * 2)
-    x = ttk.Button(root, text='X', command=lambda: letter_pressed('X'), width=button_width)
+    x = tk.Button(root, text='X', command=lambda: letter_pressed('X'), width=button_width)
+    button_list.append(x)
     x.place(x=button_width * 10 + x_offset*3, y=y_offset + button_height * 2)
-    c = ttk.Button(root, text='C', command=lambda: letter_pressed('C'), width=button_width)
+    c = tk.Button(root, text='C', command=lambda: letter_pressed('C'), width=button_width)
+    button_list.append(c)
     c.place(x=button_width * 20 + x_offset*3, y=y_offset + button_height * 2)
-    v = ttk.Button(root, text='V', command=lambda: letter_pressed('V'), width=button_width)
+    v = tk.Button(root, text='V', command=lambda: letter_pressed('V'), width=button_width)
+    button_list.append(v)
     v.place(x=button_width * 30 + x_offset*3, y=y_offset + button_height * 2)
-    b = ttk.Button(root, text='B', command=lambda: letter_pressed('B'), width=button_width)
+    b = tk.Button(root, text='B', command=lambda: letter_pressed('B'), width=button_width)
+    button_list.append(b)
     b.place(x=button_width * 40 + x_offset*3, y=y_offset + button_height * 2)
-    n = ttk.Button(root, text='N', command=lambda: letter_pressed('N'), width=button_width)
+    n = tk.Button(root, text='N', command=lambda: letter_pressed('N'), width=button_width)
+    button_list.append(n)
     n.place(x=button_width * 50 + x_offset*3, y=y_offset + button_height * 2)
-    m = ttk.Button(root, text='M', command=lambda: letter_pressed('M'), width=button_width)
+    m = tk.Button(root, text='M', command=lambda: letter_pressed('M'), width=button_width)
+    button_list.append(m)
     m.place(x=button_width * 60 + x_offset*3, y=y_offset + button_height * 2)
 
-    delete = ttk.Button(root, text='DEL', command=delete_pressed, width=button_width * 2)
+    delete = tk.Button(root, text='DEL', command=delete_pressed, width=button_width * 2)
     delete.place(x=button_width * 70 + x_offset*3, y=y_offset + button_height * 2)
 
-    enter = ttk.Button(root, text='Enter', command=return_pressed, width=int(button_width*1.5))
-    enter.place(x=button_width * 00 + x_offset, y=y_offset + button_height * 2)
+    enter = tk.Button(root, text='Enter', command=return_pressed, width=int(button_width*1.5))
+    enter.place(x=button_width * 00 + x_offset * .5, y=y_offset + button_height * 2)
 
     for i in range(guess_count * word_length):
         label_list.append(ttk.Label(root, text=str(i), background="white", padding=label_size/4))
@@ -217,6 +262,9 @@ if __name__ == '__main__':
         i.place(x=(int(i['text']) % word_length) * label_size + label_size / 2.3, y=int(int(i['text']) / word_length)
                 * label_size + label_size / 4)
         i['text'] = ''
+
+    bottom_label = tk.Label(root, width=90, background='white', height=2)
+    bottom_label.place(x=0, y=int(window_height * 0.90))
 
     read_words()
     root.mainloop()
