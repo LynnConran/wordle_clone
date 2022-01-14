@@ -8,6 +8,7 @@ import tkinter as tk
 from tkinter import ttk
 
 five_file_path = 'five_letter_words.txt'
+six_file_path = "six_letter_words.txt"
 guess_count = 6
 word_length = 5
 
@@ -23,12 +24,28 @@ current_row = 0
 word = 'temp'
 
 
+def find_words(length):
+    length_file = open(six_file_path, 'w')
+    with open("all_english_words.txt") as file:
+        words = file.readlines()
+        for i in words:
+            if len(i) == length + 1:  # Plus one for the newline
+                length_file.write(i)
+    length_file.close()
+
+
 def read_words():
     global word
-    with open(five_file_path) as file:
-        words = file.readlines()
-        for i in range(len(words)):
-            words[i] = words[i].strip('\n')
+    if word_length == 5:
+        with open(five_file_path) as file:
+            words = file.readlines()
+            for i in range(len(words)):
+                words[i] = words[i].strip('\n')
+    elif word_length == 6:
+        with open(six_file_path) as file:
+            words = file.readlines()
+            for i in range(len(words)):
+                words[i] = words[i].strip('\n')
     word_count = len(words)
     random_int = random.randint(0, word_count)
     word = words[random_int]
@@ -59,10 +76,16 @@ def change_label_color(color, position):
 
 
 def provide_feedback():
-    with open(five_file_path) as file:
-        words = file.readlines()
-        for i in range(len(words)):
-            words[i] = words[i].strip('\n')
+    if word_length == 5:
+        with open(five_file_path) as file:
+            words = file.readlines()
+            for i in range(len(words)):
+                words[i] = words[i].strip('\n')
+    elif word_length == 6:
+        with open(six_file_path) as file:
+            words = file.readlines()
+            for i in range(len(words)):
+                words[i] = words[i].strip('\n')
     guess = ''
     position = current_row * word_length
     for i in range(word_length):
@@ -84,7 +107,7 @@ def provide_feedback():
             change_label_color('grey', position + i)
             change_button_color('grey', guess[i].upper())
     if guess == word:
-        game_over()
+        game_over(True)
     return True
 
 
@@ -126,9 +149,12 @@ def return_pressed():
                 game_over()
 
 
-def game_over():
+def game_over(win=False):
     global current_letter, current_row
-    bottom_label['text'] = 'Game over, word was : ' + str(word)
+    if win:
+        bottom_label['text'] = "You Win! Word was : " + str(word).capitalize()
+    else:
+        bottom_label['text'] = 'Game over, word was : ' + str(word).capitalize()
     read_words()
     for i in label_list:
         i['text'] = ''
