@@ -6,14 +6,12 @@
 import random
 import tkinter as tk
 from tkinter import ttk
+from pynput import keyboard
 
 five_file_path = 'five_letter_words.txt'
 six_file_path = "six_letter_words.txt"
 guess_count = 6
 word_length = 5
-
-button_width = 6
-button_height = 30
 
 label_list = []
 button_list = []
@@ -22,6 +20,20 @@ current_row = 0
 # bottom_label = None
 
 word = 'temp'
+
+
+def on_press(key):
+    try:
+        k = key.char
+    except:
+        k = key.name
+    if k in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
+             'v', 'w', 'x', 'y', 'z']:
+        letter_pressed(k.upper())
+    elif k == 'delete' or k == 'backspace':
+        delete_pressed()
+    elif k == 'enter':
+        return_pressed()
 
 
 def find_words(length):
@@ -124,6 +136,7 @@ def letter_pressed(letter):
 
 def delete_pressed():
     global current_letter
+    bottom_label['text'] = ''
     if current_letter == 0:
         position = current_letter + (current_row * word_length)
     elif current_letter == -1:
@@ -174,14 +187,23 @@ def change_button_color(color, letter):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+
+    listener = keyboard.Listener(on_press=on_press)
+    listener.start()
+
     root = tk.Tk()
     root.title("Wordle Clone")
 
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
 
-    window_height = int(screen_height/1.5)
-    window_width = int(window_height*(2/3))
+    # window_height = int(screen_height/1.5)
+    # window_width = int(window_height*(2/3))
+
+    window_height = 800
+    window_width = 533
+
+    # print(window_height, " ", window_width)
 
     center_x = int(screen_width/2 - window_width/2)
     center_y = int(screen_height/2 - window_height/2)
@@ -191,8 +213,11 @@ if __name__ == '__main__':
     y_offset = int(window_height * .8)
     x_offset = int(window_width * .05)
 
+    button_width = 5
+    button_height = 26
+
     root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
-    root.resizable(False, False)
+    # root.resizable(False, False)
 
     q = tk.Button(root, text='Q', command=lambda: letter_pressed('Q'), width=button_width)
     button_list.append(q)
@@ -289,7 +314,7 @@ if __name__ == '__main__':
                 * label_size + label_size / 4)
         i['text'] = ''
 
-    bottom_label = tk.Label(root, width=90, background='white', height=2)
+    bottom_label = tk.Label(root, width=80, background='white', height=2)
     bottom_label.place(x=0, y=int(window_height * 0.90))
 
     read_words()
